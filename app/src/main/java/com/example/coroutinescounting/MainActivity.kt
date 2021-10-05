@@ -1,5 +1,6 @@
 package com.example.coroutinescounting
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import kotlinx.coroutines.*
 import kotlin.math.log
+import kotlin.random.Random
 
 
 class MainActivity : AppCompatActivity() {
@@ -22,14 +24,15 @@ class MainActivity : AppCompatActivity() {
     var count: Int = 0
     var job: Job? =null
     var yPress: Int =0
+    var r = 0
+    var g =0
+    var b = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initView()
-
-
         runBlocking {
 
             btPlus.setOnTouchListener { view, motionEvent ->
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity() {
                         GlobalScope.launch(Dispatchers.Main) {
                             while (isPress == true){
                                 count++
+                                RandomColorTextView()
                                 Log.d("PRESS", "onCreate: $count")
                                 tvNumber.setText(count.toString())
                                 delay(200)
@@ -56,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                                 if(count>0){
                                     delay(300)
                                     count--
+                                    RandomColorTextView()
                                     Log.d("PRESS", "onCreate: Count --")
                                     tvNumber.setText(count.toString())
                                 }
@@ -80,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                         GlobalScope.launch(Dispatchers.Main) {
                             while (isPress == true){
                                 count--
+                                RandomColorTextView()
                                 Log.d("PRESS", "onCreate: $count")
                                 tvNumber.setText(count.toString())
                                 delay(200)
@@ -95,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                                 if(count>0){
                                     delay(300)
                                     count--
+                                    RandomColorTextView()
                                     Log.d("PRESS", "onCreate: Count --")
                                     tvNumber.setText(count.toString())
                                 }
@@ -121,8 +128,9 @@ class MainActivity : AppCompatActivity() {
                     Log.d("PRESS", "onCreate: PRESSS: $yPress")
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    var y = (motionEvent.y - yPress).toInt()
+                    var y = ((motionEvent.y - yPress)/2).toInt()
                     count = count - y
+                    RandomColorTextView()
                     tvNumber.setText(count.toString())
                     yPress = motionEvent.y.toInt()
                 }
@@ -134,12 +142,14 @@ class MainActivity : AppCompatActivity() {
                             if(count>0){
                                 delay(300)
                                 count--
+                                RandomColorTextView()
                                 Log.d("PRESS", "onCreate: Count --")
                                 tvNumber.setText(count.toString())
                             }
                             else{
                                 delay(300)
                                 count++
+                                RandomColorTextView()
                                 tvNumber.setText(count.toString())
                             }
                         }
@@ -148,6 +158,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             true
+        }
+    }
+
+    fun RandomColorTextView(){
+        if(count % 100 == 0){
+            r = Random.nextInt(255)
+            g = Random.nextInt(255)
+            b = Random.nextInt(255)
+            tvNumber.setTextColor(Color.rgb(r,g,b))
         }
     }
 
